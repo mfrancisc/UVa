@@ -4,63 +4,64 @@
 
 using namespace std;
 
-struct proposal {
-	string name;
-	float price;
-	int meetReq;
-	vector<string> meetReqList;
-};
-
-bool acompare(proposal lhs, proposal rhs) { 
-	return (lhs.meetReq > rhs.meetReq) || 
-		((lhs.meetReq == rhs.meetReq ) && ( lhs.price < rhs.price ));
- }
 
 int main() {
 	int n,p;
-		int cnt  = 1;
+	int cnt  = 1;
 	while(true){
-		cin>>n;
-		if(n == 0) break;
-		cin>>p;
+		cin>>n>>p;
 		cin.ignore();
-		string req[n];
 
-		proposal proposals[p];
+		if(n == 0 && p == 0) break;
 
+		string save_name;
+		string name;
+		float save_p = 2000000000;
+		int reqMeet = -1;
+		int meetReq;
+		float price;
+
+
+		string x;
 		for(int i = 0; i < n; i++){
 			//cin>>req[i];
-			getline(cin, req[i]);
+			getline(cin, x);
 		}
 
 		for(int e = 0; e < p; e++){
 
-			cin>>proposals[e].name;
+			getline(cin, name);
+
+			cin>>price;
 			cin.ignore();
-			cin>>proposals[e].price;
-			cin.ignore();
-			cin>>proposals[e].meetReq;
+			cin>>meetReq;
 			cin.ignore();
 
-			int mr = proposals[e].meetReq;
+			if(meetReq > reqMeet) {
 
-			//cout<<proposals[e].name;
-			//cout<<proposals[e].price;
-			//cout<<proposals[e].meetReq;
+				save_name = name;
+				reqMeet = meetReq;
+				save_p = price;
+			} else if( meetReq == reqMeet && price < save_p){
+				save_name = name;
+				reqMeet = meetReq;
+				save_p = price;
+			}
 
-			for(int a = 0; a < mr; a++){
+
+
+			for(int a = 0; a < meetReq; a++){
 				string reqs;
 				//	cin>>reqs;
 				getline(cin, reqs);
-				proposals[e].meetReqList.push_back(reqs);
 			}
 
 		}
 		
-		sort(proposals, proposals+p, acompare);
+		if(cnt > 1) cout << endl;
+
 		cout << "RFP #" << cnt << endl;
-		cout << proposals[0].name << endl;
-		cout << endl;
+		cout << save_name << endl;
 		cnt++;
 		
 	}
