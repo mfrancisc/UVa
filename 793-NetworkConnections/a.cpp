@@ -5,88 +5,72 @@
 
 using namespace std;
 
+class UnionFind {
+    private:
+        vector <int> p, rank;
+    public:
+        UnionFind(int N) {
+            rank.assign(N+1, 0); // tree height
+            p.assign(N+1, 0); // tree 
+            for(int i = 1; i <= N; i++) p[i] = i; // each number is a set
+        }
+
+        int findSet(int i) {
+            if(p[i] != i)  return p[i] = findSet(p[i]);
+            else return i; 
+        }
+
+        bool isSameSet(int i, int j) {
+            return findSet(i) == findSet(j);
+        }
+
+        void unionSet(int i, int j) {
+            if(!isSameSet(i, j)){
+                int x = findSet(i);         
+                int y = findSet(j);
+
+                if(rank[x] > rank[y]){
+                    p[y] = x; 
+                }else{
+                    p[x] = y; 
+                    if(rank[x] == rank[y]) rank[y]++;
+                }
+            } 
+
+        }
+
+};
+
 int main() {
 
     int T;
     //cin>>T;
     scanf("%d", &T);
     while(T--){
-        vector <  set <int>  >m;
-        vector <  vector <int>  >q;
-
         int comp;
-        scanf("%d", &comp);
-        cout << "comp: " << comp << endl;
-        m.resize(comp);
-        q.resize(comp);
+        scanf("\n%d\n", &comp);
+        UnionFind set(comp);
 
         int i,j;
-        string c;
-	string blank;
-	getline(cin, blank);
-
-        while(true) {
-
-		getline(cin, c);
-
-		if(c[0] != 'c' && c[0] != 'q') break;
-
-		i = c[2] - '0';
-		j = c[4] - '0';
-
-		// multiple connections
-		if(c[0] == 'c') {
-			m[i].insert(j);
-			m[j].insert(i);
-		} else {
-			q[i].push_back(j); 
-			cout << i << " " << j << endl;
-		}
-        }
-	
-	cout << " out loop " << endl;
-
         int succ = 0;
         int fail = 0;
-        for(int f = 1; f <= comp; f++) {
+        string s;
+        char c;
+        //getline(cin, blank);
+        while(true) {
+            //getline(cin, c);
+            if(!getline(cin,s) || s.empty()) break;
+            sscanf(s.c_str(),"%c %d %d",&c,&i,&j);
 
-	cout << "f: " << f << " size: " << q[f].size() << endl;
-
-            while(!q[f].empty()) {
-
-                int val = q[f].back();
-                q[f].pop_back();
-		cout << "val: " << val << endl;
-
-		if(val == 0) continue;
-
-                if(f == val) {
-                    succ++; 
-                    continue;
-                }
-
-                if(m[val].find(f) != m[val].end()) {
-                    succ++; 
-                    continue;
-                }
-
-                bool found = false;
-                for(set <int>::iterator it = m[val].begin(); it != m[val].end(); ++it){
-			cout << "it: " << *it << endl;
-                    if(m[*it].find(f) != m[*it].end()) {
-                        succ++; 
-                        found = true;
-                    }
-                }
-
-
-                if(!found)fail++;
+            if(c == 'c') {set.unionSet(i,j);}
+            else if(c == 'q') {
+                if(set.isSameSet(i,j)) succ++; 
+                else fail++;
             }
-
         }
 
-        cout << succ << "," << fail << endl;
-        if(T!=0) cout << endl;
+        cout << succ << ',' << fail << endl;
+        if(T) cout << endl;
     }
 
     return 0;
