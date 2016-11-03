@@ -15,54 +15,64 @@ int main() {
         vector <  vector <int>  >q;
 
         int comp;
-        //cin>>comp;
-    scanf("%d", &comp);
+        scanf("%d", &comp);
         cout << "comp: " << comp << endl;
         m.resize(comp);
         q.resize(comp);
 
         int i,j;
-        char c,blank;
-        while(true){
-            //cin>>c>>i>>j;
-            //getline(cin, c);
-            scanf("%s %d %d", &c, &i, &j);
-            cout << c << endl;
-            
-            if(c == ' ') break;
+        string c;
+	string blank;
+	getline(cin, blank);
 
-            if(c != 'c' && c != 'q') break;
+        while(true) {
 
-            // multiple connections
-            if(c == 'c') {
-                m[i].insert(j);
-                m[j].insert(i);
-            } else {
-                q[i].push_back(j); 
-                cout << i << " " << j << endl;
-            }
+		getline(cin, c);
+
+		if(c[0] != 'c' && c[0] != 'q') break;
+
+		i = c[2] - '0';
+		j = c[4] - '0';
+
+		// multiple connections
+		if(c[0] == 'c') {
+			m[i].insert(j);
+			m[j].insert(i);
+		} else {
+			q[i].push_back(j); 
+			cout << i << " " << j << endl;
+		}
         }
+	
+	cout << " out loop " << endl;
 
         int succ = 0;
         int fail = 0;
-        for(int f = 1; f <= comp; f++){
+        for(int f = 1; f <= comp; f++) {
 
-            while(!q[f].empty()){
+	cout << "f: " << f << " size: " << q[f].size() << endl;
+
+            while(!q[f].empty()) {
+
                 int val = q[f].back();
                 q[f].pop_back();
+		cout << "val: " << val << endl;
+
+		if(val == 0) continue;
 
                 if(f == val) {
                     succ++; 
                     continue;
                 }
 
-                if(m[val].find(f) != m[val].end()){
+                if(m[val].find(f) != m[val].end()) {
                     succ++; 
                     continue;
                 }
 
                 bool found = false;
                 for(set <int>::iterator it = m[val].begin(); it != m[val].end(); ++it){
+			cout << "it: " << *it << endl;
                     if(m[*it].find(f) != m[*it].end()) {
                         succ++; 
                         found = true;
@@ -74,6 +84,7 @@ int main() {
             }
 
         }
+
         cout << succ << "," << fail << endl;
         if(T!=0) cout << endl;
     }
